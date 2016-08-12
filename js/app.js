@@ -51,8 +51,6 @@ var markers = [];
 
 function initMap() {
 
-	//Styles the listing marker icon
-	//var defaultIcon = makeMarkerIcon('0091ff');
 	var largeInfowindow = new google.maps.InfoWindow();
 	var bounds = new google.maps.LatLngBounds();
 
@@ -73,7 +71,6 @@ function initMap() {
 			position: position,
 			title: title,
 			animation: google.maps.Animation.DROP,
-			//icon: defaultIcon,
 			id: i
 		});
 
@@ -81,30 +78,18 @@ function initMap() {
 		markers.push(marker);
 
 		// Create an onclick event to open an infowindow at each marker.
-		/*marker.addListener('click', function(){
+		marker.addListener('click', function(){
 			populateInfoWindow(this, largeInfowindow);
-		});*/
+		});
 		bounds.extend(markers[i].position);
 	}
     // Extend the boundaries of the map for each marker
 	map.fitBounds(bounds);
 
-/*	function makeMarkerIcon(markerColor){
-		var markerImage = new google.maps.MarkerImage(
-			'http://chart.googleapis.com/chart?chst=d_map_spin&chld=1.15|0|'+
-			markerColor + '|40|_|%E2%80%A2',
-			new google.maps.Size(21,34),
-			new google.maps.Point(0, 0),
-			new google.maps.Point(10, 34),
-			new google.maps.Size(21.34));
-		return markerImage;
-	}
-};*/
-
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
 // on that markers position.
-/*function populateInfoWindow(marker, infowindow){
+function populateInfoWindow(marker, infowindow){
         // Check to make sure the infowindow is not already opened on this marker.
 	if(infowindow.marker != marker){
 		infowindow.marker = marker;
@@ -115,7 +100,7 @@ function initMap() {
 			infowindow.setMarker(null);
 		});
 	}
-};*/
+};
 }
 var View = function(data){
 	this.markerLocation = ko.observable(data.location);
