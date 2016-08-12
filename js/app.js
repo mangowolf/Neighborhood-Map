@@ -104,6 +104,7 @@ function populateInfoWindow(marker, infowindow){
 }
 var View = function(data){
 	this.markerLocation = ko.observable(data.location);
+	this.locationTitle = ko.observable(data.title);
 	/*this.marker = new google.maps.Marker({
 		position: this.markerLocation,
 		map: map,
@@ -119,6 +120,7 @@ var ViewModel = function(){
 	Model.forEach(function(locItem){
 		self.locationList.push(new View(locItem));
 	});
+
 };
 
 ko.applyBindings(new ViewModel());

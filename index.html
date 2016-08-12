@@ -9,6 +9,15 @@
 		<div class="container">
 			<div class="options-box">
 				<h1>Find Your New NYC Home</h1>
+				<div>
+					<input data-bind="locationTitle" id="filter-box" type="text" placeholder="Enter an area to filter results!">
+					<input id="filter-button" type="button" value="Filter">
+				</div>
+				<div>
+					<ul data-bind="foreach: locationList" id="location-list">
+						<li data-bind="text: locationTitle" id="location-title"></li>
+					</ul>
+				</div>
 			</div>
 			<div id="map"></div>
 		</div>
