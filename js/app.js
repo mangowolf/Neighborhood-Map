@@ -46,24 +46,40 @@ var Model = [
 ];
 
 var View = function(data){
+
+
 	this.markerLocation = ko.observable(data.location);
 	this.locationTitle = ko.observable(data.title);
-	/*this.marker = new google.maps.Marker({
-		position: this.markerLocation,
-		map: map,
-		title: data.title
-	});*/
+
 };
 
-var ViewModel = function(){
-	var self = this;
+var ViewModel = {
 
-	this.locationList = ko.observableArray([]);
+	init: function(){
 
-	Model.forEach(function(locItem){
-		self.locationList.push(new View(locItem));
-	});
-	return self.locationList();
+		var self = this;
+
+		this.locationList = ko.observableArray([]);
+
+		this.filterTitle = ko.observable(null);
+
+		this.filter();
+
+	},
+
+	filter: function(){
+		console.log(this.filterTitle);
+
+		if(this.filterTitle == null){
+			Model.forEach(function(locItem){
+				self.locationList.push(new View(locItem));
+			});
+			return self.locationList();
+		}
+		else{
+			alert('hello world');
+		}
+	}
 };
 
 
@@ -71,7 +87,8 @@ var map;
 // Create a new blank array for all the listing markers.
 var markers = [];
 
-var loc = ViewModel();
+//Ties the KO observables to the global scope where Google map resides
+var loc = ViewModel.filter();
 
 function initMap() {
 
@@ -126,7 +143,4 @@ function populateInfoWindow(marker, infowindow){
 };
 }
 
-
-
-
-ko.applyBindings(new ViewModel());
+ko.applyBindings(new ViewModel.init());

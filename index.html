@@ -10,8 +10,8 @@
 			<div class="options-box">
 				<h1>Find Your New NYC Home</h1>
 				<div>
-					<input data-bind="locationTitle" id="filter-box" type="text" placeholder="Enter an area to filter results!">
-					<input id="filter-button" type="button" value="Filter">
+						<input data-bind="textInput: filterTitle" id="filter-box" type="text" placeholder="Enter an area to filter results!">
+						<input id="filter-button" type="submit" value="Filter">
 				</div>
 				<div>
 					<ul data-bind="foreach: locationList" id="location-list">
