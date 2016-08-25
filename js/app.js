@@ -47,15 +47,16 @@ var Model = [
 
 var View = function(data){
 
-
 	this.markerLocation = ko.observable(data.location);
 	this.locationTitle = ko.observable(data.title);
 
 };
 
-var ViewModel = {
+/*var ViewModel = {
 
-	init: function(){
+	locationList: ko.observableArray([]),
+	filterTitle: ko.obersvable(null),
+	ViewModel.init: function(){
 
 		var self = this;
 
@@ -63,32 +64,70 @@ var ViewModel = {
 
 		this.filterTitle = ko.observable(null);
 
-		this.filter();
-
 	},
 
 	filter: function(){
-		console.log(this.filterTitle);
 
 		if(this.filterTitle == null){
 			Model.forEach(function(locItem){
 				self.locationList.push(new View(locItem));
 			});
-			return self.locationList();
+			return ViewModel.init().selfself.locationList();
 		}
 		else{
 			alert('hello world');
 		}
 	}
+};*/
+
+var ViewModel = {
+	locationList: ko.observableArray([]),
+	filterTitle: ko.observable(null),
+	filter: ko.observable(""),
 };
+
+/*ViewModel.init = function(){
+	this.filter;
+},*/
+
+/*ViewModel.populateLocList = function(){
+	var self = this;
+	Model.forEach(function(locItem){
+		self.locationList.push(new View(locItem));
+	});
+	console.log(ViewModel.locationList());
+	return self.locationList();
+}*/
+
+ViewModel.filteredLocations = ko.computed(function(){
+	var self = this;
+	var filter = self.filter().toLowerCase();
+	console.log(filter);
+	if(!filter){
+		return self.locationList();
+	}else{
+		return ko.utils.arrayFilter(self.locationList(), function(item){
+			return item.locationTitle().toLowerCase().indexOf(filter) >=0;
+			//return ko.utils.stringStartsWith(locItem.locationTitle().toLowerCase(), filter);
+		})
+	}
+},ViewModel);
+
+//ViewModel.populateLocList();
+
+var mappedData = ko.utils.arrayMap(Model, function(item){
+	return new View(item);
+});
+
+ViewModel.locationList(mappedData);
 
 
 var map;
 // Create a new blank array for all the listing markers.
-var markers = [];
+//var markers = [];
 
 //Ties the KO observables to the global scope where Google map resides
-var loc = ViewModel.filter();
+//var loc = ViewModel.locationList();
 
 function initMap() {
 
@@ -102,10 +141,12 @@ function initMap() {
 	});
 
     // The following group uses the location array to create an array of markers on initialize.
-	for(var i=0; i<loc.length; i++){
+	for(var i=0; i<ViewModel.locationList().length; i++){
 		// Get the position from the location array.
-		var position = loc[i].markerLocation();
-		var title = loc[i].locationTitle();
+		var position = ViewModel.locationList()[i].markerLocation();
+		var title = ViewModel.locationList()[i].locationTitle();
+		//var position = loc[i].markerLocation();
+		//var title = loc[i].locationTitle();
         // Create a marker per location, and put into markers array.
 		var marker = new google.maps.Marker({
 			map: map,
@@ -115,13 +156,13 @@ function initMap() {
 			id: i
 		});
 		// Push the marker to our array of markers.
-		markers.push(marker);
+		ViewModel.locationList()[i]=marker;
 
 		// Create an onclick event to open an infowindow at each marker.
 		marker.addListener('click', function(){
 			populateInfoWindow(this, largeInfowindow);
 		});
-		bounds.extend(markers[i].position);
+		bounds.extend(ViewModel.locationList()[i].position);
 	}
     // Extend the boundaries of the map for each marker
 	map.fitBounds(bounds);
@@ -143,4 +184,5 @@ function populateInfoWindow(marker, infowindow){
 };
 }
 
-ko.applyBindings(new ViewModel.init());
+ko.applyBindings(ViewModel);
+//ko.applyBindings(new ViewModel.init());
