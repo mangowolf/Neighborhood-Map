@@ -156,13 +156,13 @@ function initMap() {
 			id: i
 		});
 		// Push the marker to our array of markers.
-		ViewModel.locationList()[i]=marker;
+		ViewModel.locationList()[i].markerLocation=marker;
 
 		// Create an onclick event to open an infowindow at each marker.
 		marker.addListener('click', function(){
 			populateInfoWindow(this, largeInfowindow);
 		});
-		bounds.extend(ViewModel.locationList()[i].position);
+		bounds.extend(ViewModel.locationList()[i].markerLocation.position);
 	}
     // Extend the boundaries of the map for each marker
 	map.fitBounds(bounds);
