@@ -15,7 +15,7 @@
 				</div>
 				<div>
 					<ul data-bind="foreach: filteredLocations" id="location-list">
-						<li data-bind="text: locationTitle" id="location-title"></li>
+						<li data-bind="text: locationTitle, click: $parent.curLocation" id="location-title"></li>
 					</ul>
 				</div>
 			</div>

@@ -1,6 +1,8 @@
 // These are the real estate listings that will be shown to the user.
 // Normally we'd have these in a database instead.
-var Model = [
+var model = {
+	currentLocation: null,
+	locations: [
 	{
 		title: 'Park Ave Penthouse',
 		location: {
@@ -43,8 +45,9 @@ var Model = [
 			lng: -73.9961237
 		},
 	}
-];
+]};
 
+//Stores location observables linked to the model
 var View = function(data){
 
 	this.markerLocation = ko.observable(data.location);
@@ -52,86 +55,47 @@ var View = function(data){
 
 };
 
-/*var ViewModel = {
-
-	locationList: ko.observableArray([]),
-	filterTitle: ko.obersvable(null),
-	ViewModel.init: function(){
-
-		var self = this;
-
-		this.locationList = ko.observableArray([]);
-
-		this.filterTitle = ko.observable(null);
-
-	},
-
-	filter: function(){
-
-		if(this.filterTitle == null){
-			Model.forEach(function(locItem){
-				self.locationList.push(new View(locItem));
-			});
-			return ViewModel.init().selfself.locationList();
-		}
-		else{
-			alert('hello world');
-		}
-	}
-};*/
-
 var ViewModel = {
 	locationList: ko.observableArray([]),
-	filterTitle: ko.observable(null),
 	filter: ko.observable(""),
 };
 
-/*ViewModel.init = function(){
-	this.filter;
-},*/
-
-/*ViewModel.populateLocList = function(){
-	var self = this;
-	Model.forEach(function(locItem){
-		self.locationList.push(new View(locItem));
-	});
-	console.log(ViewModel.locationList());
-	return self.locationList();
-}*/
-
+//Filters list of displayed locations based on User query string
 ViewModel.filteredLocations = ko.computed(function(){
 	var self = this;
 	var filter = self.filter().toLowerCase();
-	console.log(filter);
 	if(!filter){
 		return self.locationList();
 	}else{
 		return ko.utils.arrayFilter(self.locationList(), function(item){
 			return item.locationTitle().toLowerCase().indexOf(filter) >=0;
-			//return ko.utils.stringStartsWith(locItem.locationTitle().toLowerCase(), filter);
 		})
 	}
 },ViewModel);
 
-//ViewModel.populateLocList();
+/*ViewModel.filteredMarkers = ko.computed(function(){
+	var self = this;
+	var filter = self.filter().toLowerCase();
+	if(!filter){
+		return self.locationList();
+	}else{
+		return ko.utils.arrayFilter(self.locationList(), function(item){
+			return item.locationTitle().toLowerCase().indexOf(filter) >=0;
+		})
+	}
+},ViewModel);*/
 
-var mappedData = ko.utils.arrayMap(Model, function(item){
-	return new View(item);
-});
-
-ViewModel.locationList(mappedData);
-
+//Pops up information window over marker when corresponding list item is selected
+ViewModel.curLocation = function(curLoc){
+	google.maps.event.trigger(curLoc.markerLocation,'click');
+};
 
 var map;
-// Create a new blank array for all the listing markers.
-//var markers = [];
-
-//Ties the KO observables to the global scope where Google map resides
-//var loc = ViewModel.locationList();
+var largeInfowindow;
 
 function initMap() {
 
-	var largeInfowindow = new google.maps.InfoWindow();
+	largeInfowindow = new google.maps.InfoWindow();
 	var bounds = new google.maps.LatLngBounds();
 
 	// Constructor creates a new map - only center and zoom are required.
@@ -162,10 +126,20 @@ function initMap() {
 		marker.addListener('click', function(){
 			populateInfoWindow(this, largeInfowindow);
 		});
+
+
+		//Create an onclick event to open an infowindow for each location
+		/*title.addListener('click', function(){
+			populateInfoWindow(this, largeInfowindow);
+		});*/
+
 		bounds.extend(ViewModel.locationList()[i].markerLocation.position);
 	}
     // Extend the boundaries of the map for each marker
 	map.fitBounds(bounds);
+
+
+};
 
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
@@ -182,7 +156,11 @@ function populateInfoWindow(marker, infowindow){
 		});
 	}
 };
-}
 
+var mappedData = ko.utils.arrayMap(model.locations, function(item){
+	return new View(item);
+});
+
+ViewModel.locationList(mappedData);
 ko.applyBindings(ViewModel);
 //ko.applyBindings(new ViewModel.init());
