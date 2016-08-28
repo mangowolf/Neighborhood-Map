@@ -1,0 +1,16 @@
+{
+  "name": "Udacity-front-end-dev-stack",
+  "homepage": "https://github.com/mangowolf/Neighborhood-Map",
+  "authors": [
+    "mangowolf <jimmyz949@hotmail.com>"
+  ],
+  "description": "Jimmy's Udacity Front End web development packages",
+  "main": "index.html",
+  "keywords": [
+    "css",
+    "js",
+    "front-end"
+  ],
+  "license": "MIT",
+  "private": true
+}

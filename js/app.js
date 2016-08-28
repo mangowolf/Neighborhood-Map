@@ -1,4 +1,45 @@
-// These are the real estate listings that will be shown to the user.
+/**
+ * Generates a random number and returns it as a string for OAuthentication
+ * @return {string}
+ */
+function nonce_generate() {
+  return (Math.floor(Math.random() * 1e12).toString());
+}
+
+var yelp_url = "http://api.yelp.com/v2/search";
+
+var parameters = {
+  oauth_consumer_key: 'QJR3xjIwW9d9jnCjLBTzXQ',
+  oauth_token: 'zEwwDoGQU78dheH4id-wxVpaR5jwyDu2',
+  oauth_nonce: nonce_generate(),
+  oauth_timestamp: Math.floor(Date.now()/1000),
+  oauth_signature_method: 'HMAC-SHA1',
+  oauth_version : '1.0',
+  callback: 'cb',          // This is crucial to include for jsonp implementation in AJAX or else the oauth-signature will be wrong.
+  location: 'New+York',
+  term: 'food',
+  limit: 1
+};
+
+var encodedSignature = oauthSignature.generate('GET',yelp_url, parameters, 'tc2X8lqfCR4GeVCoStbnPyo4nds', 'vXE_E2P7ryml6qhzqYaObKLhcdA');
+parameters.oauth_signature = encodedSignature;
+
+var settings = {
+  url: yelp_url,
+  data: parameters,
+  cache: true,                // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
+  dataType: 'jsonp',
+  success: function(results) {
+    console.log(results);
+  },
+  error: function() {
+    console.log('failed');
+  }
+};
+
+// Send AJAX query via jQuery library.
+$.ajax(settings);
+
 // Normally we'd have these in a database instead.
 var model = {
 	currentLocation: null,
@@ -75,18 +116,6 @@ ViewModel.filteredLocations = ko.computed(function(){
 	}
 },ViewModel);
 
-/*ViewModel.filteredMarkers = ko.computed(function(){
-	var self = this;
-	var filter = self.filter().toLowerCase();
-	if(!filter){
-		return self.locationList();
-	}else{
-		return ko.utils.arrayFilter(self.locationList(), function(item){
-			return item.locationTitle().toLowerCase().indexOf(filter) >=0;
-		})
-	}
-},ViewModel);*/
-
 //Pops up information window over marker when corresponding list item is selected
 ViewModel.curLocation = function(curLoc){
 	google.maps.event.trigger(curLoc.markerLocation,'click');
@@ -107,14 +136,13 @@ function initMap() {
 	  center: {lat: 40.7413549, lng: -73.9980244},
 	  zoom: 13
 	});
-	//ViewModel.displayMarkers();
+
     // The following group uses the location array to create an array of markers on initialize.
 	for(var i=0; i<ViewModel.locationList().length; i++){
 		// Get the position from the location array.
 		var position = ViewModel.locationList()[i].markerLocation();
 		var title = ViewModel.locationList()[i].locationTitle();
-		//var position = loc[i].markerLocation();
-		//var title = loc[i].locationTitle();
+
         // Create a marker per location, and put into markers array.
 		var marker = new google.maps.Marker({
 			map: map,
@@ -137,39 +165,11 @@ function initMap() {
 	map.fitBounds(bounds);
 };
 
-/*ViewModel.displayMarkers = ko.computed(function(){
-	    // The following group uses the location array to create an array of markers on initialize.
-	for(var i=0; i<ViewModel.filteredLocations().length; i++){
-		// Get the position from the location array.
-		var position = ViewModel.filteredLocations()[i].markerLocation();
-		var title = ViewModel.filteredLocations()[i].locationTitle();
-		//var position = loc[i].markerLocation();
-		//var title = loc[i].locationTitle();
-        // Create a marker per location, and put into markers array.
-		marker = new google.maps.Marker({
-			map: map,
-			position: position,
-			title: title,
-			animation: google.maps.Animation.DROP,
-			id: i
-		});
-		// Push the marker to our array of markers.
-		ViewModel.filteredLocations()[i].markerLocation=marker;
-
-		// Create an onclick event to open an infowindow at each marker.
-		marker.addListener('click', function(){
-			populateInfoWindow(this, largeInfowindow);
-		});
-
-		bounds.extend(ViewModel.filteredLocations()[i].markerLocation.position);
-	};
-}, ViewModel);*/
-
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
 // on that markers position.
 function populateInfoWindow(marker, infowindow){
-        // Check to make sure the infowindow is not already opened on this marker.
+    // Check to make sure the infowindow is not already opened on this marker.
 	if(infowindow.marker != marker){
 		infowindow.marker = marker;
 		infowindow.setContent('<div>' + marker.title + '</div>');
@@ -187,4 +187,3 @@ var mappedData = ko.utils.arrayMap(model.locations, function(item){
 
 ViewModel.locationList(mappedData);
 ko.applyBindings(ViewModel);
-//ko.applyBindings(new ViewModel.init());
