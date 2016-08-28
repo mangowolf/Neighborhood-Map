@@ -68,7 +68,9 @@ ViewModel.filteredLocations = ko.computed(function(){
 		return self.locationList();
 	}else{
 		return ko.utils.arrayFilter(self.locationList(), function(item){
-			return item.locationTitle().toLowerCase().indexOf(filter) >=0;
+			var match = item.locationTitle().toLowerCase().indexOf(filter) >=0;
+			item.markerLocation.setVisible(match);
+			return match;
 		})
 	}
 },ViewModel);
@@ -92,18 +94,20 @@ ViewModel.curLocation = function(curLoc){
 
 var map;
 var largeInfowindow;
+var bounds;
+var marker;
 
 function initMap() {
 
 	largeInfowindow = new google.maps.InfoWindow();
-	var bounds = new google.maps.LatLngBounds();
+	bounds = new google.maps.LatLngBounds();
 
 	// Constructor creates a new map - only center and zoom are required.
 	map = new google.maps.Map(document.getElementById('map'), {
 	  center: {lat: 40.7413549, lng: -73.9980244},
 	  zoom: 13
 	});
-
+	//ViewModel.displayMarkers();
     // The following group uses the location array to create an array of markers on initialize.
 	for(var i=0; i<ViewModel.locationList().length; i++){
 		// Get the position from the location array.
@@ -127,19 +131,39 @@ function initMap() {
 			populateInfoWindow(this, largeInfowindow);
 		});
 
-
-		//Create an onclick event to open an infowindow for each location
-		/*title.addListener('click', function(){
-			populateInfoWindow(this, largeInfowindow);
-		});*/
-
 		bounds.extend(ViewModel.locationList()[i].markerLocation.position);
 	}
     // Extend the boundaries of the map for each marker
 	map.fitBounds(bounds);
-
-
 };
+
+/*ViewModel.displayMarkers = ko.computed(function(){
+	    // The following group uses the location array to create an array of markers on initialize.
+	for(var i=0; i<ViewModel.filteredLocations().length; i++){
+		// Get the position from the location array.
+		var position = ViewModel.filteredLocations()[i].markerLocation();
+		var title = ViewModel.filteredLocations()[i].locationTitle();
+		//var position = loc[i].markerLocation();
+		//var title = loc[i].locationTitle();
+        // Create a marker per location, and put into markers array.
+		marker = new google.maps.Marker({
+			map: map,
+			position: position,
+			title: title,
+			animation: google.maps.Animation.DROP,
+			id: i
+		});
+		// Push the marker to our array of markers.
+		ViewModel.filteredLocations()[i].markerLocation=marker;
+
+		// Create an onclick event to open an infowindow at each marker.
+		marker.addListener('click', function(){
+			populateInfoWindow(this, largeInfowindow);
+		});
+
+		bounds.extend(ViewModel.filteredLocations()[i].markerLocation.position);
+	};
+}, ViewModel);*/
 
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
