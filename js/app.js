@@ -1,7 +1,7 @@
-// Normally we'd have these in a database instead.
-var model = {
+/*-------JSON Data containing locations to be displayed on the map-------*/
+var locations = {
 	currentLocation: null,
-	locations: [
+	locationsArray: [
 	{
 		title: 'Whiskey Thieves',
 		yelpURL: 'http://api.yelp.com/v2/business/whiskey-thieves-san-francisco',
@@ -44,34 +44,6 @@ var model = {
 	},
 ]};
 
-//Stores location observables linked to the model
-var View = function(data){
-
-	this.markerLocation = ko.observable(data.location);
-	this.locationTitle = ko.observable(data.title);
-
-};
-
-var ViewModel = {
-	locationList: ko.observableArray([]),
-	filter: ko.observable(""),
-};
-
-//Filters list of displayed locations based on User query string
-ViewModel.filteredLocations = ko.computed(function(){
-	var self = this;
-	var filter = self.filter().toLowerCase();
-	if(!filter){
-		return self.locationList();
-	}else{
-		return ko.utils.arrayFilter(self.locationList(), function(item){
-			var match = item.locationTitle().toLowerCase().indexOf(filter) >=0;
-			item.markerLocation.setVisible(match);
-			return match;
-		})
-	}
-},ViewModel);
-
 var yelpAPI = function(i){
 	/**
 	 * Generates a random number and returns it as a string for OAuthentication
@@ -82,8 +54,8 @@ var yelpAPI = function(i){
 	}
 
 	//var yelpBaseURL = "http://api.yelp.com/v2/business";
-	//var yelp_url = yelpBaseURL + model[i].yelpURL;
-	var yelp_url = model.locations[i].yelpURL;
+	//var yelp_url = yelpBaseURL + locations[i].yelpURL;
+	var yelp_url = locations.locationsArray[i].yelpURL;
 
 	var parameters = {
 	  oauth_consumer_key: 'QJR3xjIwW9d9jnCjLBTzXQ',
@@ -115,141 +87,143 @@ var yelpAPI = function(i){
 	// Send AJAX query via jQuery library.
 	$.ajax(settings).done(function(results){
 		var yelpLocations = results.reviews;
-		model.locations[i].result = results;
-		model.locations[i].ratingImg = results.rating_img_url;
-		model.locations[i].snippetImg = results.snippet_image_url;
-		model.locations[i].snippetText = results.snippet_text;
-		console.log(model.locations[i].ratingImg);
+		locations.locationsArray[i].result = results;
+		locations.locationsArray[i].ratingImg = results.rating_img_url;
+		locations.locationsArray[i].snippetImg = results.snippet_image_url;
+		locations.locationsArray[i].snippetText = results.snippet_text;
+		console.log(locations.locationsArray[i].ratingImg);
 		/*yelpLocations.forEach(function(review){
 			var loc = {};
 			loc.rating = location.rating;
 			loc.excerpt = location.excerpt;
 			//loc.lat = location.location.coordinate.latitude;
 			//loc.lng = location.location.coordinate.longitude;
-			model.locations.push(loc);
+			locations.locations.push(loc);
 			console.log(loc);
-			model.locations[0].rating = review.rating;
-			model.locations[0].excerpt = review.excerpt;
+			locations.locations[0].rating = review.rating;
+			locations.locations[0].excerpt = review.excerpt;
 			console.log(review);
 		});*/
 	});
 };
 
-//Pops up information window over marker when corresponding list item is selected
-ViewModel.curLocation = function(curLoc){
-	google.maps.event.trigger(curLoc.markerLocation,'click');
-};
-
+/*--------------Creates the map using Google Maps API -------------------*/
 var map;
-var largeInfowindow;
+var largeInfoWindow;
 var bounds;
-var marker;
 
 function initMap() {
 
-	largeInfowindow = new google.maps.InfoWindow();
+	//Creates an instance of the Google Maps InfoWindow
+	largeInfoWindow = new google.maps.InfoWindow();
+
+	//Defines the bounds of the map
 	bounds = new google.maps.LatLngBounds();
 
-	// Constructor creates a new map - only center and zoom are required.
-	map = new google.maps.Map(document.getElementById('map'), {
-	  center: {lat: 37.7701612271937, lng: -122.415708343283},
-	  zoom: 13
+	map = new google.maps.Map(document.getElementById('map'),{
+		center: {lat: 37.7701612271937, lng: -122.415708343283},
+		zoom: 13
 	});
 
-	//ViewModel.setMarker();
-    // The following group uses the location array to create an array of markers on initialize.
-	for(var i=0; i<ViewModel.locationList().length; i++){
-		// Get the position from the location  array.
-		var position = ViewModel.locationList()[i].markerLocation();
-		var title = ViewModel.locationList()[i].locationTitle();
+	var locLength = locations.locationsArray.length;
 
-        // Create a marker per location, and put into markers array.
-		var marker = new google.maps.Marker({
-			map: map,
-			position: position,
-			title: title,
-			animation: google.maps.Animation.DROP,
-			id: i
-		});
-		// Push the marker to our array of markers.
-		ViewModel.locationList()[i].markerLocation=marker;
-
-		// Create an onclick event to open an infowindow at each marker.
-		marker.addListener('click', function(){
-			console.log(largeInfowindow);
-			ViewModel.populateInfoWindow(this, largeInfowindow,i);
-		});
-
-		bounds.extend(ViewModel.locationList()[i].markerLocation.position);
+	for(var i=0; i<locLength;i++){
 		yelpAPI(i);
-	}
+	};
 
-	/*for (var i; i < model.locations.length; i++){
-		yelpAPI(i);
-	}*/
+	//var mappedData = ko.utils.arrayMap(locations.locationsArray)
+	var vm = new ViewModel();
+	ko.applyBindings(vm);
+}
 
-    // Extend the boundaries of the map for each marker
-	map.fitBounds(bounds);
-};
-
-ViewModel.setMarker = function(){
+var ViewModel = function(){
+	console.log('View Model bound to knockout');
 	var self = this;
-	    // The following group uses the location array to create an array of markers on initialize.
-	for(var i=0; i<ViewModel.locationList().length; i++){
-		// Get the position from the location  array.
-		var position = ViewModel.locationList()[i].markerLocation();
-		var title = ViewModel.locationList()[i].locationTitle();
+	self.filter = ko.observable(""),
 
-        // Create a marker per location, and put into markers array.
-		var marker = new google.maps.Marker({
+	//Creates an observable array bound to the model
+	self.locationList = ko.observableArray(locations.locationsArray),
+	self.locationList().forEach(function(bar){
+
+			//sets the marker for each location
+			var marker = new google.maps.Marker({
 			map: map,
-			position: position,
-			title: title,
+			position: bar.location,
+			title: bar.title,
 			animation: google.maps.Animation.DROP,
-			id: i
+			//id: i
 		});
-		// Push the marker to our array of markers.
-		ViewModel.locationList()[i].markerLocation=marker;
 
-		var k = i
+		bar.markerLocation = marker;
 
-		// Create an onclick event to open an infowindow at each marker.
-		marker.addListener('click', function(marker, largeInfowindow, k){
-			console.log(marker);
+		var gEvent = google.maps.event;
+		gEvent.addListener(marker,'click',function(marker, infowindow){
+			return function(){
+				if(infowindow.marker != marker){
+					infowindow.marker = marker;
+					console.log(bar.ratingImg);
+					var content = '<h3>' + bar.title + '</h3>' + '<img src=' +
+						bar.ratingImg + '></div>' + '<div><img src=' + bar.snippetImg +
+						'></div>' + '<div>' + bar.snippetText + '</div>'
+					infowindow.setContent(content);
+					//infowindow.setContent('<h3>' + locations.locations[0].rating + '</h3>');
+					infowindow.open(map,marker);
+			        // Make sure the marker property is cleared if the infowindow is closed.
+					infowindow.addListener('closeClick', function(){
+						infowindow.setMarker(null);
+					});
+					console.log(infowindow);
+				}else{
+					console.log('fail');
+				}
+			};
+		}(marker, largeInfoWindow, map));
+		bounds.extend(bar.markerLocation.position);
+	});
+	/*setMarker = function(){
+		for(var i=0; i<locations.locationsArray.length; i++){
+			// Get the position from the location  array.
+			var position = locationList()[i].markerLocation;
+			var title = locationList()[i].locationTitle;
 
-		},this);
+	        // Create a marker per location, and put into markers array.
+			var marker = new google.maps.Marker({
+				map: map,
+				position: position,
+				title: title,
+				animation: google.maps.Animation.DROP,
+				id: i
+			});
 
-		bounds.extend(ViewModel.locationList()[i].markerLocation.position);
-		yelpAPI(i);
-	}
+			// Push the marker to our array of markers.
+			ViewModel.locationList()[i].markerLocation=marker;
+
+			bounds.extend(ViewModel.locationList()[i].markerLocation.position);
+			console.log(self.locationList()[i]);
+		}
+
+		map.fitBounds(bounds);
+
+	}(),*/
+
+
+	//Computed Observable that filters the array list based on query parameter
+	filteredLocations = ko.computed(function(){
+		filter = self.filter().toLowerCase();
+		if(!filter){
+			return self.locationList();
+		}else{
+			return ko.utils.arrayFilter(self.locationList(), function(loc){
+				var match = loc.title.toLowerCase().indexOf(filter) >=0;
+				loc.markerLocation.setVisible(match);
+				return match;
+			});
+		}
+	})
+
+	self.curLocation = function(bar){
+		console.log('working');
+		google.maps.event.trigger(bar.markerLocation,'click');
+	};
 };
-
-// This function populates the infowindow when the marker is clicked. We'll only allow
-// one infowindow which will open at the marker that is clicked, and populate based
-// on that markers position.
-ViewModel.populateInfoWindow = function(marker, infowindow, i){
-    // Check to make sure the infowindow is not already opened on this marker.
-	if(infowindow.marker != marker){
-		infowindow.marker = marker;
-		infowindow.setContent('<h3>' + marker.title + '</h3>' + '<img src=' +
-			model.locations[i].ratingImg + '></div>' + '<div><img src=' + model.locations[i].snippetImg +
-			'></div>' + '<div>' + model.locations[i].snippetText + '</div>');
-		//infowindow.setContent('<h3>' + model.locations[0].rating + '</h3>');
-		infowindow.open(map,marker);
-        // Make sure the marker property is cleared if the infowindow is closed.
-		infowindow.addListener('closeClick', function(){
-			infowindow.setMarker(null);
-		});
-	}
-	else{
-		console.log('fail');
-	}
-};
-
-var mappedData = ko.utils.arrayMap(model.locations, function(item){
-	return new View(item);
-});
-
-ViewModel.locationList(mappedData);
-ko.applyBindings(ViewModel);
 
