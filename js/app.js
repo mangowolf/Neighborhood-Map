@@ -3,55 +3,45 @@ var model = {
 	currentLocation: null,
 	locations: [
 	{
-		title: 'Los Tacos No.1',
-		yelpURL: 'http://api.yelp.com/v2/business/los-tacos-no-1-new-york',
+		title: 'Whiskey Thieves',
+		yelpURL: 'http://api.yelp.com/v2/business/whiskey-thieves-san-francisco',
 		location: {
-			lat: 40.742455,
-			lng: -74.005956
+			lat: 37.7860926,
+			lng: -122.4171254
 		},
 	},
 	{
-		title: 'Park Ave Penthouse',
+		title: 'Nihon Whisky Lounge',
+		yelpURL: 'http://api.yelp.com/v2/business/nihon-whisky-lounge-san-francisco',
 		location: {
-			lat: 40.7713024,
-			lng: -73.9632393
+			lat: 37.768697,
+			lng: -122.41529
 		},
 	},
 	{
-		title: 'Chelsea Loft',
+		title: 'Rickhouse',
+		yelpURL: 'http://api.yelp.com/v2/business/rickhouse-san-francisco',
 		location: {
-			lat: 40.7444883,
-			lng: -73.9949465
+			lat: 37.7904968261719,
+			lng: -122.403594970703
 		},
 	},
 	{
-		title: 'Union Square Open Floor Plan',
+		title: 'Hard Water',
+		yelpURL: 'http://api.yelp.com/v2/business/hard-water-san-francisco',
 		location: {
-			lat: 40.7347062,
-			lng: -73.9895759
+			lat: 37.797501,
+			lng: -122.395484
 		},
 	},
 	{
-		title: 'East Village Hip Studio',
+		title: 'Rye',
+		yelpURL: 'http://api.yelp.com/v2/business/rye-san-francisco',
 		location: {
-			lat: 40.7281777,
-			lng: -73.984377
+			lat: 37.78677,
+			lng: -122.41461
 		},
 	},
-	{
-		title: 'TriBeCa Artsy Bachelor Pad',
-		location: {
-			lat: 40.7195264,
-			lng: -74.0089934
-		},
-	},
-	{
-		title: 'Chinatown Homey Space',
-		location: {
-			lat: 40.7180628,
-			lng: -73.9961237
-		},
-	}
 ]};
 
 //Stores location observables linked to the model
@@ -82,7 +72,7 @@ ViewModel.filteredLocations = ko.computed(function(){
 	}
 },ViewModel);
 
-var yelpAPI = function(){
+var yelpAPI = function(i){
 	/**
 	 * Generates a random number and returns it as a string for OAuthentication
 	 * @return {string}
@@ -93,7 +83,7 @@ var yelpAPI = function(){
 
 	//var yelpBaseURL = "http://api.yelp.com/v2/business";
 	//var yelp_url = yelpBaseURL + model[i].yelpURL;
-	var yelp_url = model.locations[0].yelpURL;
+	var yelp_url = model.locations[i].yelpURL;
 
 	var parameters = {
 	  oauth_consumer_key: 'QJR3xjIwW9d9jnCjLBTzXQ',
@@ -114,9 +104,9 @@ var yelpAPI = function(){
 	  data: parameters,
 	  cache: true,                // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
 	  dataType: 'jsonp',
-	  success: function(results) {
+	  /*success: function(results) {
 	    console.log(results);
-	  },
+	  },*/
 	  error: function() {
 	    console.log('failed');
 	  }
@@ -125,9 +115,11 @@ var yelpAPI = function(){
 	// Send AJAX query via jQuery library.
 	$.ajax(settings).done(function(results){
 		var yelpLocations = results.reviews;
-		model.locations[0].result = results;
-		model.locations[0].rating = results.rating;
-		console.log(model.locations[0].rating);
+		model.locations[i].result = results;
+		model.locations[i].ratingImg = results.rating_img_url;
+		model.locations[i].snippetImg = results.snippet_image_url;
+		model.locations[i].snippetText = results.snippet_text;
+		console.log(model.locations[i].ratingImg);
 		/*yelpLocations.forEach(function(review){
 			var loc = {};
 			loc.rating = location.rating;
@@ -160,13 +152,14 @@ function initMap() {
 
 	// Constructor creates a new map - only center and zoom are required.
 	map = new google.maps.Map(document.getElementById('map'), {
-	  center: {lat: 40.7413549, lng: -73.9980244},
+	  center: {lat: 37.7701612271937, lng: -122.415708343283},
 	  zoom: 13
 	});
 
+	//ViewModel.setMarker();
     // The following group uses the location array to create an array of markers on initialize.
 	for(var i=0; i<ViewModel.locationList().length; i++){
-		// Get the position from the location array.
+		// Get the position from the location  array.
 		var position = ViewModel.locationList()[i].markerLocation();
 		var title = ViewModel.locationList()[i].locationTitle();
 
@@ -183,34 +176,73 @@ function initMap() {
 
 		// Create an onclick event to open an infowindow at each marker.
 		marker.addListener('click', function(){
-			populateInfoWindow(this, largeInfowindow);
+			console.log(largeInfowindow);
+			ViewModel.populateInfoWindow(this, largeInfowindow,i);
 		});
 
 		bounds.extend(ViewModel.locationList()[i].markerLocation.position);
+		yelpAPI(i);
 	}
 
-	yelpAPI();
+	/*for (var i; i < model.locations.length; i++){
+		yelpAPI(i);
+	}*/
 
     // Extend the boundaries of the map for each marker
 	map.fitBounds(bounds);
 };
 
+ViewModel.setMarker = function(){
+	var self = this;
+	    // The following group uses the location array to create an array of markers on initialize.
+	for(var i=0; i<ViewModel.locationList().length; i++){
+		// Get the position from the location  array.
+		var position = ViewModel.locationList()[i].markerLocation();
+		var title = ViewModel.locationList()[i].locationTitle();
 
+        // Create a marker per location, and put into markers array.
+		var marker = new google.maps.Marker({
+			map: map,
+			position: position,
+			title: title,
+			animation: google.maps.Animation.DROP,
+			id: i
+		});
+		// Push the marker to our array of markers.
+		ViewModel.locationList()[i].markerLocation=marker;
+
+		var k = i
+
+		// Create an onclick event to open an infowindow at each marker.
+		marker.addListener('click', function(marker, largeInfowindow, k){
+			console.log(marker);
+
+		},this);
+
+		bounds.extend(ViewModel.locationList()[i].markerLocation.position);
+		yelpAPI(i);
+	}
+};
 
 // This function populates the infowindow when the marker is clicked. We'll only allow
 // one infowindow which will open at the marker that is clicked, and populate based
 // on that markers position.
-function populateInfoWindow(marker, infowindow){
+ViewModel.populateInfoWindow = function(marker, infowindow, i){
     // Check to make sure the infowindow is not already opened on this marker.
 	if(infowindow.marker != marker){
 		infowindow.marker = marker;
-		infowindow.setContent('<div>' + marker.title + '</div>' + '<h3>' + model.locations[0].rating + '</h3>');
+		infowindow.setContent('<h3>' + marker.title + '</h3>' + '<img src=' +
+			model.locations[i].ratingImg + '></div>' + '<div><img src=' + model.locations[i].snippetImg +
+			'></div>' + '<div>' + model.locations[i].snippetText + '</div>');
 		//infowindow.setContent('<h3>' + model.locations[0].rating + '</h3>');
 		infowindow.open(map,marker);
         // Make sure the marker property is cleared if the infowindow is closed.
 		infowindow.addListener('closeClick', function(){
 			infowindow.setMarker(null);
 		});
+	}
+	else{
+		console.log('fail');
 	}
 };
 
