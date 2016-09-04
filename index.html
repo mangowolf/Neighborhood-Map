@@ -2,16 +2,17 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Neighborhood Map</title>
-		<link rel="stylesheet" href="css/style.css">
+		<link rel="stylesheet" href="css/style.css" media="screen">
 	</head>
 	<body>
 		<div class="container">
 			<div class="options-box">
-				<h1>Find Your New NYC Home</h1>
+				<h1>Wet your whistle with some Whiskey!</h1>
 				<div>
-						<input data-bind="value: filter, valueUpdate: 'afterkeydown'" id="filter-box" type="text" placeholder="Enter an area to filter results!"/>
-						<!--<input id="filter-button" type="submit" value="Filter">-->
+						<input data-bind="value: filter, valueUpdate: 'afterkeydown'" id="filter-box" type="text" placeholder="Enter a Whiskey bar to filter results!"/>
 				</div>
 				<div>
 					<ul data-bind="foreach: filteredLocations" id="location-list">
@@ -19,7 +20,10 @@
 					</ul>
 				</div>
 			</div>
-			<div id="map"></div>
+			<div id="slideRight">
+				<div id="nav"><button id="hamburgerIcon">&#9776;</button> Menu</div>
+				<div id="map"></div>
+			</div>
 		</div>
 	</body>
 	<script src="bower_components/jquery/dist/jquery.js"></script>

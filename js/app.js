@@ -44,6 +44,8 @@ var locations = {
 	},
 ]};
 
+/*-----------------------YELP API CALL--------------------------------*/
+
 var yelpAPI = function(i){
 	/**
 	 * Generates a random number and returns it as a string for OAuthentication
@@ -53,8 +55,6 @@ var yelpAPI = function(i){
 	  return (Math.floor(Math.random() * 1e12).toString());
 	}
 
-	//var yelpBaseURL = "http://api.yelp.com/v2/business";
-	//var yelp_url = yelpBaseURL + locations[i].yelpURL;
 	var yelp_url = locations.locationsArray[i].yelpURL;
 
 	var parameters = {
@@ -74,13 +74,10 @@ var yelpAPI = function(i){
 	var settings = {
 	  url: yelp_url,
 	  data: parameters,
-	  cache: true,                // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
+	  cache: true,        // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
 	  dataType: 'jsonp',
-	  /*success: function(results) {
-	    console.log(results);
-	  },*/
 	  error: function() {
-	    console.log('failed');
+	    alert('Yelp information is not accessible at this time.');
 	  }
 	};
 
@@ -91,19 +88,6 @@ var yelpAPI = function(i){
 		locations.locationsArray[i].ratingImg = results.rating_img_url;
 		locations.locationsArray[i].snippetImg = results.snippet_image_url;
 		locations.locationsArray[i].snippetText = results.snippet_text;
-		console.log(locations.locationsArray[i].ratingImg);
-		/*yelpLocations.forEach(function(review){
-			var loc = {};
-			loc.rating = location.rating;
-			loc.excerpt = location.excerpt;
-			//loc.lat = location.location.coordinate.latitude;
-			//loc.lng = location.location.coordinate.longitude;
-			locations.locations.push(loc);
-			console.log(loc);
-			locations.locations[0].rating = review.rating;
-			locations.locations[0].excerpt = review.excerpt;
-			console.log(review);
-		});*/
 	});
 };
 
@@ -137,10 +121,9 @@ function initMap() {
 }
 
 var ViewModel = function(){
-	console.log('View Model bound to knockout');
 	var self = this;
 	self.filter = ko.observable(""),
-
+	//self.optionBox = ko.observable(true),
 	//Creates an observable array bound to the model
 	self.locationList = ko.observableArray(locations.locationsArray),
 	self.locationList().forEach(function(bar){
@@ -151,8 +134,17 @@ var ViewModel = function(){
 			position: bar.location,
 			title: bar.title,
 			animation: google.maps.Animation.DROP,
-			//id: i
 		});
+
+		marker.addListener('click', toggleBounce);
+
+		function toggleBounce(){
+			if(marker.getAnimation()!=null){
+				marker.setAnimation(null);
+			}else{
+				marker.setAnimation(google.maps.Animation.BOUNCE);
+			}
+		}
 
 		bar.markerLocation = marker;
 
@@ -222,8 +214,17 @@ var ViewModel = function(){
 	})
 
 	self.curLocation = function(bar){
-		console.log('working');
 		google.maps.event.trigger(bar.markerLocation,'click');
 	};
+
+	/*self.toggleMenu = function(){
+		console.log('in function!');
+		if(self.optionBox() == true){
+			self.optionBox(false);
+		}else
+		{
+			self.optionBox(true);
+		}
+	}*/
 };
 

@@ -119,19 +119,6 @@ var yelpAPI = function(i){
 		locations.locations[i].ratingImg = results.rating_img_url;
 		locations.locations[i].snippetImg = results.snippet_image_url;
 		locations.locations[i].snippetText = results.snippet_text;
-		console.log(locations.locations[i].ratingImg);
-		/*yelpLocations.forEach(function(review){
-			var loc = {};
-			loc.rating = location.rating;
-			loc.excerpt = location.excerpt;
-			//loc.lat = location.location.coordinate.latitude;
-			//loc.lng = location.location.coordinate.longitude;
-			locations.locations.push(loc);
-			console.log(loc);
-			locations.locations[0].rating = review.rating;
-			locations.locations[0].excerpt = review.excerpt;
-			console.log(review);
-		});*/
 	});
 };
 
