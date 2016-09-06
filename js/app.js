@@ -122,7 +122,7 @@ function initMap() {
 
  // Adaptation to smaller screen sizes.
 var menu = document.querySelector('#navBar');
-var main = document.querySelector('main');
+var main = document.querySelector('#container');
 var drawer = document.querySelector('#drawer');
 
 //To show the sidebar
