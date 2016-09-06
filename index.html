@@ -8,23 +8,21 @@
 		<link rel="stylesheet" href="css/style.css" media="screen">
 	</head>
 	<body>
-		<div class="container">
-			<div class="options-box">
-				<h1>Wet your whistle with some Whiskey!</h1>
-				<div>
-						<input data-bind="value: filter, valueUpdate: 'afterkeydown'" id="filter-box" type="text" placeholder="Enter a Whiskey bar to filter results!"/>
-				</div>
-				<div>
-					<ul data-bind="foreach: filteredLocations" id="location-list">
-						<li data-bind="text: title, click: $parent.curLocation" id="location-title"></li>
-					</ul>
-				</div>
+		<nav id="drawer" class="options-box">
+			<h1>Wet your whistle with some Whiskey!</h1>
+			<div>
+					<input data-bind="value: filter, valueUpdate: 'afterkeydown'" id="filter-box" type="text" placeholder="Enter a Whiskey bar to filter results!"/>
 			</div>
-			<div id="slideRight">
-				<div id="nav"><button id="hamburgerIcon">&#9776;</button> Menu</div>
-				<div id="map"></div>
+			<div>
+				<ul data-bind="foreach: filteredLocations" id="location-list">
+					<li data-bind="text: title, click: $parent.curLocation" id="location-title"></li>
+				</ul>
 			</div>
-		</div>
+		</nav>
+		<main class= "container">
+			<a id="navBar">&#9776; Menu</a>
+			<div id="map"></div>
+		</main>
 	</body>
 	<script src="bower_components/jquery/dist/jquery.js"></script>
 	<script src="js/lib/knockout-3.2.0.js"></script>

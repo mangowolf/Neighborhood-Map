@@ -1,9 +1,12 @@
 /*Style sheet*/
-html, body { height: 100%; margin: 0; padding: 0; }
+html, body, main{ height: 100%; width: 100%; margin: 0; padding: 0; }
 
 .container {
 	height: 100%;
-	position: relative;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	width: 100%;
 }
 
 input {
@@ -26,10 +29,9 @@ h1 {
 	line-height: 35px;
 	padding: 10px 10px 30px 10px;
 	text-align: left;
-	width: 340px;
+	width: 362px;
 	background-color: #525c65;
 	color: white;
-	opacity: 0.5;
 	float: left;
 }
 
@@ -38,9 +40,15 @@ h1 {
 	padding: 0;
 }
 
+.options-box.open {
+	-webkit-transform: translate(0,0);
+	transform: translate(0,0);
+}
+
 #map {
 	bottom: 0px;
 	height: 96%;
+	width: 100%;
 	left: 362px;
 	position: absolute;
 	right: 0px;
@@ -51,34 +59,72 @@ h1 {
 	width: 70%;
 }
 
-#nav {
+nav{
+	width: 362px;
+	height: 100%;
+	position: absolute;
+	transform: translate(-362px, 0);
+	transition: transform 0.3s ease;
+}
+
+nav.open{
+	-webkit-transform: translate(0,0);
+	transform: translate(0,0);
+}
+
+.nav {
+  width: 300px;
+  position: absolute;
+  /* This trasform moves the drawer off canvas. */
+  -webkit-transform: translate(-300px, 0);
+  transform: translate(-300px, 0);
+  /* Optionally, we animate the drawer. */
+  transition: transform 0.3s ease;
+}
+.nav.open {
+  -webkit-transform: translate(0, 0);
+  transform: translate(0, 0);
+}
+
+/*.slideRight{
+	width: 300px;
+	position: absolute;
+	-webkit-transform: translate(-300px, 0);
+	transform: translate(-300px, 0);
+	transition: transform 0.3s ease;
+}
+
+.slideRight.open{
+	-webkit-transform: translate(0,0);
+	transform: translate(0,0);
+}*/
+
+#navBar {
 	background-color: #525c65;
 	top: 0px;
 	height: 4%;
+	width: 100%;
 	left: 362px;
 	border: 1px solid black;
 	bottom: 0px;
 	right: 0px;
-	position: absolute;
+	position: relative;
 	color: white;
 	font-size: x-large;
 	font-weight: bold;
 }
 
-#slideRight {
-	width:100%;
-	z-index: 5;
-	position: fixed;
-	left: 0px;
-	height: 100%;
-    -webkit-box-shadow:  -5px 0px 4px 0px rgba(0, 0, 0, 0.2);
-    	moz-box-shadow:  -5px 0px 4px 0px rgba(0, 0, 0, 0.2);
-      	o-box-shadow:  -5px 0px 4px 0px rgba(0, 0, 0, 0.2);
-        box-shadow:  -5px 0px 4px 0px rgba(0, 0, 0, 0.2);
-}
-
-@media screen and (min-width: 700px){
-	.hide{
-		display: none;
+@media screen and (min-width: 600px){
+	nav {
+		position: relative;
+		transform: translate(0,0);
+	}
+	body {
+		display: flex;
+		flex-flow: row nowrap;
+	}
+	main {
+		width: auto;
+		flex-grow: 1;
 	}
 }

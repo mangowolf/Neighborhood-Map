@@ -120,6 +120,23 @@ function initMap() {
 	ko.applyBindings(vm);
 }
 
+ // Adaptation to smaller screen sizes.
+var menu = document.querySelector('#navBar');
+var main = document.querySelector('main');
+var drawer = document.querySelector('#drawer');
+
+//To show the sidebar
+menu.addEventListener('click', function(e) {
+    drawer.classList.toggle('open');
+    e.stopPropagation();
+});
+
+ // To hide the sidebar
+main.addEventListener('click', function() {
+    drawer.classList.remove('open');
+});
+
+
 var ViewModel = function(){
 	var self = this;
 	self.filter = ko.observable(""),
