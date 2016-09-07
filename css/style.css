@@ -1,11 +1,10 @@
-/*Style sheet*/
+/*-----------------Style sheet - Responsive Mobile View------------*/
 html, body, main{ height: 100%; width: 100%; margin: 0; padding: 0; }
 
 .container {
 	height: 100%;
 	display: flex;
 	flex-wrap: wrap;
-	/*justify-content: center;*/
 	width: 100%;
 	overflow: auto;
 }
@@ -22,6 +21,28 @@ h1 {
 	color: white;
 }
 
+#map {
+	bottom: 0px;
+	height: 100%;
+	width: 100%;
+	float: left;
+	right: 0px;
+}
+
+/*--------------Styles for Search Box-------------------*/
+nav{
+	width: 300px;
+	height: 100%;
+	position: absolute;
+	transform: translate(-330px, 0);
+	transition: transform 0.3s ease;
+	z-index: 3;
+}
+
+nav.open{
+	-webkit-transform: translate(0,0);
+	transform: translate(0,0);
+}
 .options-box {
 	background: #fff;
 	border: 1px solid #999;
@@ -30,10 +51,9 @@ h1 {
 	line-height: 35px;
 	padding: 10px 10px 30px 10px;
 	text-align: left;
-	/*width: 362px;*/
 	background-color: #525c65;
 	color: white;
-	/*float: left;*/
+	float: left;
 }
 
 .options-box ul {
@@ -41,78 +61,19 @@ h1 {
 	padding: 0;
 }
 
-/*.options-box.open {
-	-webkit-transform: translate(0,0);
-	transform: translate(0,0);
-}*/
-
-#map {
-	bottom: 0px;
-	top: 40px;
-	height: 100%;
-	width: 100%;
-	/*left: 362px;*/
-	position: absolute;
-	/*float: left;*/
-	right: 0px;
-}
-
 #filter-box {
 	position: relative;
 	width: 70%;
 }
 
-nav{
-	width: 300px;
-	height: 100%;
-	position: absolute;
-	transform: translate(-330px, 0);
-	transition: transform 0.3s ease;
-		z-index: 3;
-}
-
-nav.open{
-	-webkit-transform: translate(0,0);
-	transform: translate(0,0);
-}
-
-/*.nav {
-  width: 300px;
-  position: absolute;*/
-  /* This trasform moves the drawer off canvas. */
-  /*-webkit-transform: translate(-300px, 0);
-  transform: translate(-300px, 0);*/
-  /* Optionally, we animate the drawer. */
-  /*transition: transform 0.3s ease;
-}
-.nav.open {
-  -webkit-transform: translate(0, 0);
-  transform: translate(0, 0);
-}*/
-
-/*.slideRight{
-	width: 300px;
-	position: absolute;
-	-webkit-transform: translate(-300px, 0);
-	transform: translate(-300px, 0);
-	transition: transform 0.3s ease;
-}
-
-.slideRight.open{
-	-webkit-transform: translate(0,0);
-	transform: translate(0,0);
-}*/
-
+/*-------------Style for hamburger icon-----------------*/
 #navBar {
 	background-color: #525c65;
 	top: 0px;
 	height: 40px;
 	width: 100%;
-	/*left: 362px;*/
-	border: 1px solid black;
 	bottom: 0px;
 	right: 0px;
-	/*position: absolute;*/
 	float: left;
 	color: white;
 	font-size: x-large;
@@ -120,6 +81,7 @@ nav.open{
 
 }
 
+/*------------------Responsive Desktop View---------------------*/
 @media screen and (min-width: 600px){
 	nav {
 		position: relative;
@@ -132,11 +94,5 @@ nav.open{
 	main {
 		width: 100%;
 		flex-grow: 1;
-	}
-	#navBar{
-		left: 300px;
-	}
-	#map {
-		left: 265px;
 	}
 }

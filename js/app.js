@@ -1,6 +1,5 @@
 /*-------JSON Data containing locations to be displayed on the map-------*/
 var locations = {
-	currentLocation: null,
 	locationsArray: [
 	{
 		title: 'Whiskey Thieves',
@@ -55,8 +54,10 @@ var yelpAPI = function(i){
 	  return (Math.floor(Math.random() * 1e12).toString());
 	}
 
+	//Pulls in yelp URLs from Model
 	var yelp_url = locations.locationsArray[i].yelpURL;
 
+	//Required parameters for yelp call
 	var parameters = {
 	  oauth_consumer_key: 'QJR3xjIwW9d9jnCjLBTzXQ',
 	  oauth_token: 'zEwwDoGQU78dheH4id-wxVpaR5jwyDu2',
@@ -74,14 +75,16 @@ var yelpAPI = function(i){
 	var settings = {
 	  url: yelp_url,
 	  data: parameters,
-	  cache: true,        // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter "_=23489489749837", invalidating our oauth-signature
+	  // This is crucial to include as well to prevent jQuery from adding on a cache-buster parameter
+	  // "_=23489489749837", invalidating our oauth-signature
+	  cache: true,
 	  dataType: 'jsonp',
 	  error: function() {
 	    alert('Yelp information is not accessible at this time.');
 	  }
 	};
 
-	// Send AJAX query via jQuery library.
+	// Send AJAX query via jQuery library, upon success, populates Model with Yelp data.
 	$.ajax(settings).done(function(results){
 		var yelpLocations = results.reviews;
 		locations.locationsArray[i].result = results;
@@ -111,11 +114,11 @@ function initMap() {
 
 	var locLength = locations.locationsArray.length;
 
+	//Makes the API call for every database object
 	for(var i=0; i<locLength;i++){
 		yelpAPI(i);
 	};
 
-	//var mappedData = ko.utils.arrayMap(locations.locationsArray)
 	var vm = new ViewModel();
 	ko.applyBindings(vm);
 }
@@ -140,9 +143,11 @@ main.addEventListener('click', function() {
 var ViewModel = function(){
 	var self = this;
 	self.filter = ko.observable(""),
-	//self.optionBox = ko.observable(true),
+
 	//Creates an observable array bound to the model
 	self.locationList = ko.observableArray(locations.locationsArray),
+
+	//Create markers with associated information
 	self.locationList().forEach(function(bar){
 
 			//sets the marker for each location
@@ -153,6 +158,7 @@ var ViewModel = function(){
 			animation: google.maps.Animation.DROP,
 		});
 
+		//Adds animation to marker
 		marker.addListener('click', toggleBounce);
 
 		function toggleBounce(){
@@ -163,8 +169,10 @@ var ViewModel = function(){
 			}
 		}
 
+		//Sets the marker location for the bar object
 		bar.markerLocation = marker;
 
+		//Sets the Yelp content to popup infowindows for each marker
 		var gEvent = google.maps.event;
 		gEvent.addListener(marker,'click',function(marker, infowindow){
 			return function(){
@@ -175,7 +183,6 @@ var ViewModel = function(){
 						bar.ratingImg + '></div>' + '<div><img src=' + bar.snippetImg +
 						'></div>' + '<div>' + bar.snippetText + '</div>'
 					infowindow.setContent(content);
-					//infowindow.setContent('<h3>' + locations.locations[0].rating + '</h3>');
 					infowindow.open(map,marker);
 			        // Make sure the marker property is cleared if the infowindow is closed.
 					infowindow.addListener('closeClick', function(){
@@ -189,32 +196,6 @@ var ViewModel = function(){
 		}(marker, largeInfoWindow, map));
 		bounds.extend(bar.markerLocation.position);
 	});
-	/*setMarker = function(){
-		for(var i=0; i<locations.locationsArray.length; i++){
-			// Get the position from the location  array.
-			var position = locationList()[i].markerLocation;
-			var title = locationList()[i].locationTitle;
-
-	        // Create a marker per location, and put into markers array.
-			var marker = new google.maps.Marker({
-				map: map,
-				position: position,
-				title: title,
-				animation: google.maps.Animation.DROP,
-				id: i
-			});
-
-			// Push the marker to our array of markers.
-			ViewModel.locationList()[i].markerLocation=marker;
-
-			bounds.extend(ViewModel.locationList()[i].markerLocation.position);
-			console.log(self.locationList()[i]);
-		}
-
-		map.fitBounds(bounds);
-
-	}(),*/
-
 
 	//Computed Observable that filters the array list based on query parameter
 	filteredLocations = ko.computed(function(){
@@ -230,18 +211,9 @@ var ViewModel = function(){
 		}
 	})
 
+	//Sets the current location
 	self.curLocation = function(bar){
 		google.maps.event.trigger(bar.markerLocation,'click');
 	};
-
-	/*self.toggleMenu = function(){
-		console.log('in function!');
-		if(self.optionBox() == true){
-			self.optionBox(false);
-		}else
-		{
-			self.optionBox(true);
-		}
-	}*/
 };
 
