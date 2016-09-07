@@ -90,7 +90,6 @@ var yelpAPI = function(i){
         locations.locationsArray[i].ratingImg = results.rating_img_url;
         locations.locationsArray[i].snippetImg = results.snippet_image_url.replace("http://","https://");
         locations.locationsArray[i].snippetText = results.snippet_text;
-        console.log(locations.locationsArray[i].snippetImg);
     });
 };
 
