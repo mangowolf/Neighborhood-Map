@@ -88,7 +88,7 @@ var yelpAPI = function(i){
     $.ajax(settings).done(function(results){
         locations.locationsArray[i].result = results;
         locations.locationsArray[i].ratingImg = results.rating_img_url;
-        locations.locationsArray[i].snippetImg = results.snippet_image_url;
+        locations.locationsArray[i].snippetImg = results.snippet_image_url.replace("http://","https://");
         locations.locationsArray[i].snippetText = results.snippet_text;
     });
 };
