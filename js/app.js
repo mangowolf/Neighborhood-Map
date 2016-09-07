@@ -3,7 +3,7 @@ var locations = {
     locationsArray: [
     {
         title: "Whiskey Thieves",
-        yelpURL: "http://api.yelp.com/v2/business/whiskey-thieves-san-francisco",
+        yelpURL: "https://api.yelp.com/v2/business/whiskey-thieves-san-francisco",
         location: {
             lat: 37.7860926,
             lng: -122.4171254
@@ -11,7 +11,7 @@ var locations = {
     },
     {
         title: "Nihon Whisky Lounge",
-        yelpURL: "http://api.yelp.com/v2/business/nihon-whisky-lounge-san-francisco",
+        yelpURL: "https://api.yelp.com/v2/business/nihon-whisky-lounge-san-francisco",
         location: {
             lat: 37.768697,
             lng: -122.41529
@@ -19,7 +19,7 @@ var locations = {
     },
     {
         title: "Rickhouse",
-        yelpURL: "http://api.yelp.com/v2/business/rickhouse-san-francisco",
+        yelpURL: "https://api.yelp.com/v2/business/rickhouse-san-francisco",
         location: {
             lat: 37.7904968261719,
             lng: -122.403594970703
@@ -27,7 +27,7 @@ var locations = {
     },
     {
         title: "Hard Water",
-        yelpURL: "http://api.yelp.com/v2/business/hard-water-san-francisco",
+        yelpURL: "https://api.yelp.com/v2/business/hard-water-san-francisco",
         location: {
             lat: 37.797501,
             lng: -122.395484
@@ -35,7 +35,7 @@ var locations = {
     },
     {
         title: "Rye",
-        yelpURL: "http://api.yelp.com/v2/business/rye-san-francisco",
+        yelpURL: "https://api.yelp.com/v2/business/rye-san-francisco",
         location: {
             lat: 37.78677,
             lng: -122.41461
