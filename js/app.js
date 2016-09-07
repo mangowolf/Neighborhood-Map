@@ -101,24 +101,30 @@ var bounds;
 
 function initMap() {
 
-    //Creates an instance of the Google Maps InfoWindow
-    largeInfoWindow = new google.maps.InfoWindow();
+    //Checks to see if google variable exists before loading map details.
+    if(typeof google === "undefined"){
 
-    //Defines the bounds of the map
-    bounds = new google.maps.LatLngBounds();
+        alert("Google Map could not load at this time.")
 
-    map = new google.maps.Map(document.getElementById("map"),{
-        center: {lat: 37.7701612271937, lng: -122.415708343283},
-        zoom: 13
-    });
+    }else{
+        //Creates an instance of the Google Maps InfoWindow
+        largeInfoWindow = new google.maps.InfoWindow();
 
-    var locLength = locations.locationsArray.length;
+        //Defines the bounds of the map
+        bounds = new google.maps.LatLngBounds();
 
-    //Makes the API call for every database object
-    for(var i=0; i<locLength;i++){
-        yelpAPI(i);
-    };
+        map = new google.maps.Map(document.getElementById("map"),{
+            center: {lat: 37.7701612271937, lng: -122.415708343283},
+            zoom: 13
+        });
 
+        var locLength = locations.locationsArray.length;
+
+        //Makes the API call for every database object
+        for(var i=0; i<locLength;i++){
+            yelpAPI(i);
+        };
+    }
     var vm = new ViewModel();
     ko.applyBindings(vm);
 }
