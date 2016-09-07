@@ -86,7 +86,6 @@ var yelpAPI = function(i){
 
     // Send AJAX query via jQuery library, upon success, populates Model with Yelp data.
     $.ajax(settings).done(function(results){
-        var yelpLocations = results.reviews;
         locations.locationsArray[i].result = results;
         locations.locationsArray[i].ratingImg = results.rating_img_url;
         locations.locationsArray[i].snippetImg = results.snippet_image_url;
@@ -123,7 +122,7 @@ function initMap() {
         //Makes the API call for every database object
         for(var i=0; i<locLength;i++){
             yelpAPI(i);
-        };
+        }
     var vm = new ViewModel();
     ko.applyBindings(vm);
 }
@@ -167,7 +166,7 @@ var ViewModel = function(){
         marker.addListener("click", toggleBounce);
 
         function toggleBounce(){
-            if(marker.getAnimation()!=null){
+            if(marker.getAnimation()!==null){
                 marker.setAnimation(null);
             }else{
                 marker.setAnimation(google.maps.Animation.BOUNCE);
@@ -185,7 +184,7 @@ var ViewModel = function(){
                     infowindow.marker = marker;
                     var content = "<h3>" + bar.title + "</h3>" + "<img src=" +
                         bar.ratingImg + "></div>" + "<div><img src=" + bar.snippetImg +
-                        "></div>" + "<div>" + bar.snippetText + "</div>"
+                        "></div>" + "<div>" + bar.snippetText + "</div>";
                     infowindow.setContent(content);
                     infowindow.open(map,marker);
                     // Make sure the marker property is cleared if the infowindow is closed.
@@ -212,7 +211,7 @@ var ViewModel = function(){
                 return match;
             });
         }
-    })
+    });
 
     //Sets the current location
     self.curLocation = function(bar){
