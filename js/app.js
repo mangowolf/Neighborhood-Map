@@ -184,7 +184,6 @@ var ViewModel = function(){
             return function(){
                 if(infowindow.marker != marker){
                     infowindow.marker = marker;
-                    console.log(bar.ratingImg);
                     var content = "<h3>" + bar.title + "</h3>" + "<img src=" +
                         bar.ratingImg + "></div>" + "<div><img src=" + bar.snippetImg +
                         "></div>" + "<div>" + bar.snippetText + "</div>"
@@ -194,7 +193,6 @@ var ViewModel = function(){
                     infowindow.addListener("closeClick", function(){
                         infowindow.setMarker(null);
                     });
-                    console.log(infowindow);
                 }else{
                     console.log("fail");
                 }
