@@ -94,6 +94,12 @@ var yelpAPI = function(i){
     });
 };
 
+function googleError(){
+    if(typeof google === "undefined"){
+        alert("Google Maps cannot load at this time, please check your internet connection and try again.");
+    }
+}
+
 /*--------------Creates the map using Google Maps API -------------------*/
 var map;
 var largeInfoWindow;
@@ -101,12 +107,6 @@ var bounds;
 
 function initMap() {
 
-    //Checks to see if google variable exists before loading map details.
-    if(typeof google === "undefined"){
-
-        alert("Google Map could not load at this time.")
-
-    }else{
         //Creates an instance of the Google Maps InfoWindow
         largeInfoWindow = new google.maps.InfoWindow();
 
@@ -124,7 +124,6 @@ function initMap() {
         for(var i=0; i<locLength;i++){
             yelpAPI(i);
         };
-    }
     var vm = new ViewModel();
     ko.applyBindings(vm);
 }
