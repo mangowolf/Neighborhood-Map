@@ -88,6 +88,9 @@ var yelpAPI = function(i){
     $.ajax(settings).done(function(results){
         locations.locationsArray[i].result = results;
         locations.locationsArray[i].ratingImg = results.rating_img_url;
+        locations.locationsArray[i].url = results.url;
+        locations.locationsArray[i].displayPhone = results.display_phone;
+        locations.locationsArray[i].location = results.location;
         locations.locationsArray[i].snippetImg = results.snippet_image_url.replace("http://","https://");
         locations.locationsArray[i].snippetText = results.snippet_text;
     });
@@ -182,9 +185,17 @@ var ViewModel = function(){
             return function(){
                 if(infowindow.marker != marker){
                     infowindow.marker = marker;
-                    var content = "<h3>" + bar.title + "</h3>" + "<img src=" +
+                    var content = "<div class='infoWindow-Header'><h3>" + bar.title + "</h3><img src=" +
+                        bar.ratingImg + "></div><br /><a href=" + bar.url +
+                        "<br />Whisky Bar Website</a><div class='address'><p>" + bar.displayPhone +
+                        "<br />" + bar.location.city + "<br />" + bar.location.display_address[0] + "<br/>" +
+                        bar.location.display_address[1] + "<br/>" + bar.location.display_address[2] +
+                        "</p></div><div class='review-box'><img src=" + bar.snippetImg +
+                        " class='user-img'><p class='snippet-text'>" + bar.snippetText + "</p></div>";
+                        console.log(bar.url);
+                    /*var content = "<h3>" + bar.title + "</h3>" + "<img src=" +
                         bar.ratingImg + "></div>" + "<div><img src=" + bar.snippetImg +
-                        "></div>" + "<div>" + bar.snippetText + "</div>";
+                        "></div>" + "<div>" + bar.snippetText + "</div>";*/
                     infowindow.setContent(content);
                     infowindow.open(map,marker);
                     // Make sure the marker property is cleared if the infowindow is closed.

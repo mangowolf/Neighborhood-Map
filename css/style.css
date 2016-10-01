@@ -18,7 +18,7 @@ h1 {
 	font-size: 22px;
 	margin: 0 0 10px 0;
 	text-align: center;
-	color: white;
+	color: lightgrey;
 }
 
 #map {
@@ -52,7 +52,7 @@ nav{
 	padding: 10px 10px 30px 10px;
 	text-align: left;
 	background-color: #525c65;
-	color: white;
+	color: lightgrey;
 	float: left;
 	margin-top: 40px;
 }
@@ -73,10 +73,37 @@ nav{
 	height: 40px;
 	width: 100%;
 	float: left;
-	color: white;
+	color: lightgrey;
 	font-size: x-large;
 	font-weight: bold;
 	cursor: pointer;
+}
+
+.user-img{
+	float: left;
+	width: 20%;
+	margin-right: 5px;
+}
+
+.snippet-text{
+	width: 75%;
+}
+
+.infoWindow-Header{
+	padding: 5px 10px 5px;
+	/*background-color: #4285F4;*/
+	background-color: #525c65;
+	color: lightgrey;
+}
+
+.address{
+	border-bottom: 1px solid grey;
+	padding: 1px;
+}
+
+.review-box{
+	overflow: auto;
+	padding: 3px;
 }
 
 /*------------------Responsive Desktop View---------------------*/
