@@ -54,6 +54,7 @@ nav{
 	background-color: #525c65;
 	color: white;
 	float: left;
+	margin-top: 40px;
 }
 
 .options-box ul {
@@ -75,13 +76,14 @@ nav{
 	color: white;
 	font-size: x-large;
 	font-weight: bold;
+	cursor: pointer;
 }
 
 /*------------------Responsive Desktop View---------------------*/
 @media screen and (min-width: 600px){
 	nav {
-		position: relative;
-		transform: translate(0,0);
+		/*position: relative;
+		transform: translate(0,0);*/
 	}
 	body {
 		display: flex;
