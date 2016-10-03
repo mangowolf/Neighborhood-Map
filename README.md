@@ -1,6 +1,6 @@
 Instructions to run application:
 
-1. Visit https://mangowolf.github.io/Neighborhood-Map/
+1. Visit (Neighborhood Maps)[https://mangowolf.github.io/Neighborhood-Map/]
 
 or
 
